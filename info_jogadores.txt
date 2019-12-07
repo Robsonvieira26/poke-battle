@@ -1,3 +1,2 @@
-
-karol 1 0 0 
-ash 5 0 0 Nome 1 pokemon : ash 
+teste 2 0 0 2 t1 t2 
+robinho 26 0 0 2 charmander sua_mae 
