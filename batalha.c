@@ -138,7 +138,7 @@
     void lista_de_treinadores(FILE *arq_j,FILE *arq_p,Jogador player)
     {
         arq_j=fopen("info_jogadores.txt","r");//abre o arquivo em modo leitura
-        arq_p=fopen("pokedex.txt","r");
+
                 if(arq_j==NULL) exit(1); //problema no arquivo
                     while(!feof(arq_j)){
                 printf("============================\n");
@@ -147,14 +147,18 @@
                 Pokemon temp;
                 printf("Pokemons:\n");
 
+                arq_p=fopen("pokedex.txt","r");
                 while(!feof(arq_p)){//procura os pokemons no arquivo pokedex
                 fscanf(arq_p,"%s %s %s %d",temp.treinador,temp.nome,temp.tipo,&temp.numero);
                 fscanf(arq_p,"%d %d %d %d\n",&temp.att,&temp.def,&temp.hp,&temp.velo);
                 if(strcmp(temp.treinador,player.nome)==0)//se o treinador desse pokemon tem o mesmo nome do treinador atual
                     printf("->%s Tipo:%s\n",temp.nome,temp.tipo);//mostra qual é o pokemon e seu tipo
                 }
+
                 printf("\n============================\n");
                     }
+                    fclose(arq_j);
+                    fclose(arq_p);
     }
 
      int inicia_batalha(FILE* arq_j,FILE* arq_p)
@@ -204,7 +208,13 @@
                 }
                 else
                     system("cls");
-                    batalha(desafiante,oponente,&arq_j,&arq_p);
+                   int ctrl=batalha(desafiante,oponente,&arq_j,&arq_p);
+                   if(ctrl==0)
+                    {
+                        printf("Batalha invalida");
+                        return 0;
+                    }
+
 
                }
 
@@ -217,16 +227,83 @@
         printf("\t%s Vs %s\n",desafiante.nome,oponente.nome);
         printf("============================\n");
         arq_p=fopen("pokedex.txt","r+");
+        int aux_opo=0,aux_desaf=0;
         Pokemon temp;
-                while(!feof(arq_p)){
+        Pokemon* poke_desafiante=malloc(sizeof(Pokemon)*aux_desaf);//pokemons do desafiante
+        Pokemon*  poke_oponente=malloc(sizeof(Pokemon)*aux_opo);//pokemons do oponente
+
+                while(!feof(arq_p)){//roda ate o fim do arquivo
                 fscanf(arq_p,"%s %s %s %d",temp.treinador,temp.nome,temp.tipo,&temp.numero);
                 fscanf(arq_p,"%d %d %d %d\n",&temp.att,&temp.def,&temp.hp,&temp.velo);
+                //acha os pokemons do desafiante
                 if(strcmp(temp.treinador,desafiante.nome)==0)
-                    printf("Nome:%s Treinador:%s Tipo:%s\n",temp.nome,temp.treinador,temp.tipo);
+                {
+                   // printf("Nome:%s Treinador:%s Tipo:%s\n",temp.nome,temp.treinador,temp.tipo);
+                    aux_desaf++;
+                   // printf("alocamento de poke :%d\n",aux_desaf);
+                    poke_desafiante = realloc(poke_desafiante,aux_desaf*sizeof(Pokemon));//desafiante agora tem 1 pokemon
+                    strcpy(poke_desafiante[aux_desaf-1].nome,temp.nome);//copia o nome do poke
+                    strcpy(poke_desafiante[aux_desaf-1].treinador,temp.treinador);//copia o treinador
+                    strcpy(poke_desafiante[aux_desaf-1].tipo,temp.tipo);//copia o tipo
+                    poke_desafiante[aux_desaf-1].att=temp.att;
+                    poke_desafiante[aux_desaf-1].def=temp.def;
+                    poke_desafiante[aux_desaf-1].hp=temp.hp;
+                    poke_desafiante[aux_desaf-1].velo=temp.velo;
+
+
+                }
+
+                //acha os pokemons do oponente
+                if(strcmp(temp.treinador,oponente.nome)==0)
+                    {
+                        //printf("Nome:%s Treinador:%s Tipo:%s\n",temp.nome,temp.treinador,temp.tipo);
+                    aux_opo++;
+                    poke_oponente = realloc(poke_oponente,aux_opo*sizeof(Pokemon));//desafiante agora tem 1 pokemon
+                    strcpy(poke_oponente[aux_opo-1].nome,temp.nome);//copia o nome do poke
+                    strcpy(poke_oponente[aux_opo-1].treinador,temp.treinador);//copia o treinador
+                    strcpy(poke_oponente[aux_opo-1].tipo,temp.tipo);//copia o tipo
+                    poke_oponente[aux_opo-1].att=temp.att;
+                    poke_oponente[aux_opo-1].def=temp.def;
+                    poke_oponente[aux_opo-1].hp=temp.hp;
+                    poke_oponente[aux_opo-1].velo=temp.velo;
+                    //poke_oponete é o nome da variavel
+                    //[aux_opo-1] //index do alocamento dinamico o aux -1 é pq a cada novo ele add 1 mas o inicio é em 0
+                    //.velo é o atributo do string POKEMON
+                    }
+                }//fim do while
+
+                //exibe os pokemons do j1
+                printf("%s pokemons:\n",desafiante.nome);
+                for(int i=0;i<aux_desaf;i++)
+                {
+                    printf("Nome:%s Tipo:%s\n",poke_desafiante[i].nome,poke_desafiante[i].tipo);
+                }
+                //exibe os pokemons do j2
+                printf("%s pokemons:\n",oponente.nome);
+                for(int i=0;i<aux_opo;i++)
+                {
+                    printf("Nome:%s Tipo:%s\n",poke_oponente[i].nome,poke_oponente[i].tipo);
                 }
 
 
+                    int poke_batalha;//quantos pokemons o jogador vai usar na batalha
 
+                    printf("%s deseja utilizar quantos pokemons em batalha? ",desafiante.nome);
+                    scanf("%d",&poke_batalha);
+                    if(poke_batalha>aux_desaf || poke_batalha>5){
+                        printf("Numero de pokemons indisponiveis\n");
+                        system("Pause");
+                        system("cls");
+                        return 0;
+                        }
+                        //*********** achar e prepara para a batalha ******************** //
+                        
+
+
+
+
+        system("Pause");
+        system("cls");
         return 1;
     }
 

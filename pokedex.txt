@@ -1,1 +1,3 @@
-jog1 pikachu eletrico 7 100 520 500 2000 
+j1 poke1 fogo 10 10 10 10 10 
+j2 poke2 agua 20 20 20 20 20 
+j1 poke3 eletrico 30 10 11 20 30 
