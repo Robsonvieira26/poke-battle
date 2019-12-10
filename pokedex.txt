@@ -1,0 +1,1 @@
+jog1 pikachu eletrico 7 100 520 500 2000 

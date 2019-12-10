@@ -1,2 +1,2 @@
-teste 2 0 0 2 t1 t2 
-robinho 26 0 0 2 charmander sua_mae 
+jog1 1 0 0 
+jog2 2 0 0 

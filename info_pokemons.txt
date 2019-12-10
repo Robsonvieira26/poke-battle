@@ -1,1 +1,0 @@
-charmander fogo 4 40 10 100 1500 
